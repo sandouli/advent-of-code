@@ -13,14 +13,12 @@ fn main() -> Result<()> {
 }
 
 fn part_1(input: &str) -> Result<()> {
-
     let mut steps: Vec<usize> = vec![];
 
-    for line in input.lines() {
-        for step in line.split(',') {
-            steps.push(step.parse()?);
-        }
+    for step in input.trim().split(',') {
+        steps.push(step.parse()?);
     }
+
 
     // First, update steps 1 and 2 with aforementioned values
     steps[1] = 12;
@@ -36,17 +34,15 @@ fn part_1(input: &str) -> Result<()> {
 fn part_2(input: &str) -> Result<()> {
     let mut steps: Vec<usize> = vec![];
 
-    for line in input.lines() {
-        for step in line.split(',') {
-            steps.push(step.parse()?);
-        }
+    for step in input.trim().split(',') {
+        steps.push(step.parse()?);
     }
 
     let expected_result = 19690720;
 
     for noun in 0..=99 {
+        steps[1] = noun;
         for verb in 0..=99 {
-            steps[1] = noun;
             steps[2] = verb;
 
             if let Ok(result) = execute_intcode(steps.clone()) {
@@ -63,11 +59,10 @@ fn part_2(input: &str) -> Result<()> {
 
 
 fn execute_intcode(mut steps: Vec<usize>) -> Result<usize> {
-    // Execute the program until the value "99" is found or an error occured
+    // Execute the program until the value "99" is found or an error occurred
     let mut current_step: usize  = 0;
 
     loop {
-
         if steps.len() <= current_step {
             err("Current step outside boundaries of input steps!")?;
         }
