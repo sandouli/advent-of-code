@@ -58,7 +58,7 @@ fn part_2(input: &str) -> Result<()> {
         }
     }
 
-    Err(Box::<Error>::from(format!("IntCode could not find expected value!")))
+    Err(Box::<dyn Error>::from(format!("IntCode could not find expected value!")))
 }
 
 
@@ -67,58 +67,50 @@ fn execute_intcode(mut steps: Vec<usize>) -> Result<usize> {
     let mut current_step: usize  = 0;
 
     loop {
+
         if steps.len() <= current_step {
-            eprintln!("Current step outside boundaries of input steps!");
-            break;
+            return Err(Box::<dyn Error>::from(format!("Current step outside boundaries of input steps!")));
         }
         match steps[current_step] {
             1 => {
-                if steps.len() <= current_step + 3 {
-                    eprintln!("Current step + expected parameters outside boundaries of input steps!");
-                    break;
-                }
-                let first_step_position = steps[current_step + 1];
-                let second_step_position = steps[current_step + 2];
-                let destination_step_position = steps[current_step + 3];
-                if steps.len() <= first_step_position {
-                    eprintln!("First parameter position outside boundaries of input steps!");
-                    break;
-                }
-                if steps.len() <= second_step_position {
-                    eprintln!("Second parameter position outside boundaries of input steps!");
-                    break;
-                }
-                steps[destination_step_position] = steps[first_step_position] + steps[second_step_position];
+                let (first, second, destination) = get_intcode_parameters(&steps, current_step)?;
+                steps[destination] = steps[first] + steps[second];
             }
             2 => {
-                if steps.len() <= current_step + 3 {
-                    eprintln!("Current step + expected parameters outside boundaries of input steps!");
-                    break;
-                }
-                let first_step_position = steps[current_step + 1];
-                let second_step_position = steps[current_step + 2];
-                let destination_step_position = steps[current_step + 3];
-                if steps.len() <= first_step_position {
-                    eprintln!("First parameter position outside boundaries of input steps!");
-                    break;
-                }
-                if steps.len() <= second_step_position {
-                    eprintln!("Second parameter position outside boundaries of input steps!");
-                    break;
-                }
-                steps[destination_step_position] = steps[first_step_position] * steps[second_step_position];
+                let (first, second, destination) = get_intcode_parameters(&steps, current_step)?;
+                steps[destination] = steps[first] * steps[second];
             }
             99 => {
                 return Ok(steps[0]);
             }
             _ => {
-                eprintln!("Unknown opcode : {:?}", steps[current_step]);
-                break;
+                return Err(Box::<dyn Error>::from(format!("Unknown opcode : {:?}", steps[current_step])));
             }
         }
 
         current_step += 4;
     }
+}
 
-    Err(Box::<Error>::from(format!("IntCode program ended unexpectedly!")))
+fn get_intcode_parameters(steps: &[usize], current_step: usize) -> Result<(usize, usize, usize)> {
+    if steps.len() <= current_step + 3 {
+        return Err(Box::<dyn Error>::from(format!("Current step + expected parameters outside boundaries of input steps!")));
+    }
+
+    let first_step_position = steps[current_step + 1];
+    let second_step_position = steps[current_step + 2];
+    let destination_step_position = steps[current_step + 3];
+
+    if steps.len() <= first_step_position {
+        return Err(Box::<dyn Error>::from(format!("First parameter position outside boundaries of input steps!")));
+    }
+    if steps.len() <= second_step_position {
+        return Err(Box::<dyn Error>::from(format!("Second parameter position outside boundaries of input steps!")));
+    }
+    if steps.len() <= destination_step_position {
+        return Err(Box::<dyn Error>::from(format!("Destination parameter position outside boundaries of input steps!")));
+    }
+
+    Ok((first_step_position, second_step_position, destination_step_position))
+
 }
