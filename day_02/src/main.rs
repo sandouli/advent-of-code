@@ -1,5 +1,5 @@
-use std::io::{self, Read, Write};
 use std::error::Error;
+use std::io::{self, Read, Write};
 
 type Result<T> = ::std::result::Result<T, Box<dyn Error>>;
 
@@ -19,7 +19,6 @@ fn part_1(input: &str) -> Result<()> {
         steps.push(step.parse()?);
     }
 
-
     // First, update steps 1 and 2 with aforementioned values
     steps[1] = 12;
     steps[2] = 2;
@@ -38,7 +37,7 @@ fn part_2(input: &str) -> Result<()> {
         steps.push(step.parse()?);
     }
 
-    let expected_result = 19690720;
+    let expected_result = 19_690_720;
 
     for noun in 0..=99 {
         steps[1] = noun;
@@ -57,10 +56,9 @@ fn part_2(input: &str) -> Result<()> {
     err("IntCode could not find expected value!")
 }
 
-
 fn execute_intcode(mut steps: Vec<usize>) -> Result<usize> {
     // Execute the program until the value "99" is found or an error occurred
-    let mut current_step: usize  = 0;
+    let mut current_step: usize = 0;
 
     loop {
         if steps.len() <= current_step {
@@ -106,9 +104,13 @@ fn get_intcode_parameters(steps: &[usize], current_step: usize) -> Result<(usize
         err("Destination parameter position outside boundaries of input steps!")?;
     }
 
-    Ok((first_step_position, second_step_position, destination_step_position))
+    Ok((
+        first_step_position,
+        second_step_position,
+        destination_step_position,
+    ))
 }
 
 fn err(s: &str) -> Result<()> {
-    Err(Box::<dyn Error>::from(format!("{}", s)))
+    Err(Box::<dyn Error>::from(s.to_string()))
 }
