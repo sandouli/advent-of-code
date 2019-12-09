@@ -28,14 +28,25 @@ fn part_1(input: &str) -> Result<()> {
     }
 
     for i in 0..(pixels.len() / (width * height)) {
-        let current_zeroes = pixels[(i * width * height)..((i + 1) * width * height)].iter().filter(|&&v| v == '0').count();
+        let current_zeroes = pixels[(i * width * height)..((i + 1) * width * height)]
+            .iter()
+            .filter(|&&v| v == '0')
+            .count();
         if current_zeroes < min_zeroes {
             min_zeroes = current_zeroes;
             min_zeroes_layer = i;
         }
     }
 
-    let result = pixels[(min_zeroes_layer * width * height)..((min_zeroes_layer + 1) * width * height)].iter().filter(|&&v| v == '1').count() * pixels[(min_zeroes_layer * width * height)..((min_zeroes_layer + 1) * width * height)].iter().filter(|&&v| v == '2').count();
+    let result = pixels
+        [(min_zeroes_layer * width * height)..((min_zeroes_layer + 1) * width * height)]
+        .iter()
+        .filter(|&&v| v == '1')
+        .count()
+        * pixels[(min_zeroes_layer * width * height)..((min_zeroes_layer + 1) * width * height)]
+            .iter()
+            .filter(|&&v| v == '2')
+            .count();
 
     writeln!(io::stdout(), "Part 1 : {}", result)?;
     Ok(())
@@ -56,12 +67,12 @@ fn part_2(input: &str) -> Result<()> {
     }
 
     for i in 0..(pixels.len() / (width * height)) {
-        layers.push(pixels[(i * width * height)..((i+1) * (width * height))].to_vec());
+        layers.push(pixels[(i * width * height)..((i + 1) * (width * height))].to_vec());
     }
 
     let mut result: Vec<u8> = vec![];
     'outer: for i in 0..(width * height) {
-        'inner: for layer in &layers {
+        for layer in &layers {
             if layer[i] == '0' {
                 result.push(0);
                 continue 'outer;
@@ -73,8 +84,8 @@ fn part_2(input: &str) -> Result<()> {
         result.push(127);
     }
 
-    use image::ColorType;
     use image::png::PNGEncoder;
+    use image::ColorType;
     use std::fs::File;
 
     let image_file_path = format!("{}/part_2.png", env!("CARGO_MANIFEST_DIR"));
@@ -83,7 +94,11 @@ fn part_2(input: &str) -> Result<()> {
 
     encoder.encode(&result, width as u32, height as u32, ColorType::Gray(8))?;
 
-    writeln!(io::stdout(), "Part 2 : To get result, open following image : \"{}\"", image_file_path)?;
+    writeln!(
+        io::stdout(),
+        "Part 2 : To get result, open following image : \"{}\"",
+        image_file_path
+    )?;
     Ok(())
 }
 
