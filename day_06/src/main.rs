@@ -38,9 +38,7 @@ fn part_1(input: &str) -> Result<()> {
     let mut orbits_to_check: Vec<String> = vec!["COM".to_string()];
     loop {
         let mut next_orbits_to_check: Vec<String> = vec![];
-        while !orbits_to_check.is_empty() {
-            let current_orbit = orbits_to_check.pop().unwrap();
-
+        while let Some(current_orbit) =  orbits_to_check.pop() {
             if let Some(o) = orbits.get_mut(&current_orbit) {
                 result += o.len() * current_orbit_distance;
                 next_orbits_to_check.extend_from_slice(&o);
@@ -92,8 +90,7 @@ fn part_2(input: &str) -> Result<()> {
     let mut orbits_to_check: Vec<String> = orbits["YOU"].clone();
     'outer: loop {
         let mut next_orbits_to_check: Vec<String> = vec![];
-        while !orbits_to_check.is_empty() {
-            let current_orbit = orbits_to_check.pop().unwrap();
+        while let Some(current_orbit) =  orbits_to_check.pop() {
             if current_orbit == "SAN" {
                 break 'outer;
             }
