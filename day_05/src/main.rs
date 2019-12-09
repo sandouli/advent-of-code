@@ -85,7 +85,7 @@ fn execute_intcode(mut steps: Vec<i64>, system_id: i64) -> Result<i64> {
             }
             5 => {
                 let first_param = get_parameter(&steps, current_step, 1, immediate_mode_1)?;
-                let second_param = get_parameter(&steps, current_step, 2, true)? as usize;
+                let second_param = get_parameter(&steps, current_step, 2, immediate_mode_2)? as usize;
 
                 if first_param != 0 {
                     current_step = second_param;
