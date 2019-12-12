@@ -333,11 +333,30 @@ mod tests {
         let mut steps =
             parse_input_to_steps("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99");
 
-        assert_eq!(
-            execute_intcode(&mut steps, vec![], false, &mut 0, &mut 0).unwrap(),
-            99,
-            "Copy of itself"
-        );
+        let expected_result = steps.clone();
+
+        let mut result: Vec<i64> = vec![];
+
+        let mut current_step = 0;
+        let mut relative_position = 0;
+
+        loop {
+            let x = execute_intcode(
+                &mut steps,
+                vec![],
+                true,
+                &mut current_step,
+                &mut relative_position,
+            )
+            .unwrap();
+            if steps[current_step] != 99 {
+                result.push(x);
+            } else {
+                break;
+            }
+        }
+
+        assert_eq!(result, expected_result, "Copy of itself");
     }
 
     #[test]
