@@ -183,7 +183,7 @@ impl IntCodeVm {
             err!("Positional parameter should not be less than zero!");
         }
         if self.ram.len() <= position as usize {
-            for _ in 0..(position as usize - self.ram.len() + 1) {
+            for _ in 0..=(position as usize - self.ram.len()) {
                 self.ram.push(0);
             }
         }
