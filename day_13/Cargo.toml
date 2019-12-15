@@ -1,0 +1,8 @@
+[package]
+name = "day_13"
+version = "0.1.0"
+authors = ["sandouli"]
+edition = "2018"
+
+[dependencies]
+intcode_vm = { path = "../intcode_vm" }
