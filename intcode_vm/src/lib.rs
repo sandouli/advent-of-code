@@ -28,6 +28,10 @@ impl IntCodeVm {
         })
     }
 
+    pub fn set_ram(&mut self, position: usize, value: isize) {
+        self.ram[position] = value;
+    }
+
     pub fn run(&mut self, mut input: Option<isize>) -> Result<Option<isize>> {
         self.state = StateVm::Initial;
 
