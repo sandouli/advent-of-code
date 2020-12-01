@@ -1,6 +1,10 @@
+extern crate intcode_vm;
+
 use std::collections::HashMap;
 use std::error::Error;
 use std::io::{self, Read, Write};
+
+use intcode_vm::*;
 
 type Result<T> = ::std::result::Result<T, Box<dyn Error>>;
 

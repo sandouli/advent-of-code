@@ -5,3 +5,4 @@ authors = ["sandouli"]
 edition = "2018"
 
 [dependencies]
+intcode_vm = { path = "../intcode_vm" }
