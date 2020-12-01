@@ -1,8 +1,8 @@
-# Advent of Code 2019 solutions
+# Advent of Code solutions
 
-Rust solution to the [advent of code 2019](https://adventofcode.com/2019) challenge
+Rust solutions to the [advent of code](https://adventofcode.com/events) challenges
 
-File structure is a blatant rip off from [burntsushi last year's solutions](https://github.com/BurntSushi/advent-of-code)
+Directory structure is a blatant rip off from [burntsushi 2018 solutions](https://github.com/BurntSushi/advent-of-code)
 
 
 To run a solution, `cd` into its directory and invoke the program with Cargo:
