@@ -7,9 +7,9 @@
 Benchmark results:
 
     running 3 tests
-    test bench::bench_parse_input ... bench:   1,507,414 ns/iter (+/- 33,321)
-    test bench::bench_part_1      ... bench:     153,004 ns/iter (+/- 3,151)
-    test bench::bench_part_2      ... bench:      69,954 ns/iter (+/- 2,362)
+    test bench::bench_parse_input ... bench:   1,483,992 ns/iter (+/- 91,046)
+    test bench::bench_part_1      ... bench:      40,603 ns/iter (+/- 1,074)
+    test bench::bench_part_2      ... bench:      67,068 ns/iter (+/- 2,124)
 
 */
 
@@ -37,7 +37,7 @@ struct PasswordRules {
 
 impl PasswordRules {
     fn is_password_valid_1(&self) -> bool {
-        let occurrences = self.password.matches(self.character).count();
+        let occurrences = self.password.chars().filter(|&v| v == self.character).count();
         self.first_number <= occurrences && occurrences <= self.second_number
     }
 
