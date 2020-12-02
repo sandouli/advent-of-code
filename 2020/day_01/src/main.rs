@@ -14,12 +14,11 @@ Benchmark results:
 
 * When sorting expenses during parsing
     running 3 tests
-    test bench::bench_parse_input ... bench:      12,520 ns/iter (+/- 666)
-    test bench::bench_part_1      ... bench:         535 ns/iter (+/- 43)
-    test bench::bench_part_2      ... bench:      25,164 ns/iter (+/- 1,052)
+    test bench::bench_parse_input ... bench:      11,818 ns/iter (+/- 573)
+    test bench::bench_part_1      ... bench:         535 ns/iter (+/- 52)
+    test bench::bench_part_2      ... bench:      25,408 ns/iter (+/- 1,038)
 
 */
-
 
 use std::error::Error;
 use std::io::{self, Read, Write};
@@ -46,7 +45,7 @@ fn parse_input(input: &str) -> Result<Vec<usize>> {
     for line in input.lines() {
         expense_report.push(line.parse::<usize>()?);
     }
-    expense_report.sort();
+    expense_report.sort_unstable();
     Ok(expense_report)
 }
 
