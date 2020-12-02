@@ -1,3 +1,18 @@
+#![cfg_attr(feature = "unstable", feature(test))]
+
+// Lauch program : cargo run --release < input/input.txt
+// Launch benchmark : cargo +nightly bench --features "unstable"
+
+/*
+Benchmark results:
+
+    running 3 tests
+    test bench::bench_parse_input ... bench:   1,507,414 ns/iter (+/- 33,321)
+    test bench::bench_part_1      ... bench:     153,004 ns/iter (+/- 3,151)
+    test bench::bench_part_2      ... bench:      69,954 ns/iter (+/- 2,362)
+
+*/
+
 #[macro_use]
 extern crate lazy_static;
 extern crate regex;
@@ -75,30 +90,63 @@ fn main() -> Result<()> {
     let mut input = String::new();
     io::stdin().read_to_string(&mut input)?;
 
-    let password_rules: Vec<PasswordRules> = input
-        .lines()
-        .map(PasswordRules::try_from)
-        .collect::<Result<Vec<PasswordRules>>>()?;
+    let password_rules = parse_input(&input)?;
 
-    part_1(&password_rules)?;
-    part_2(&password_rules)?;
+    writeln!(io::stdout(), "Part 1 : {}", part_1(&password_rules))?;
+    writeln!(io::stdout(), "Part 2 : {}", part_2(&password_rules))?;
     Ok(())
 }
 
-fn part_1(password_rules: &[PasswordRules]) -> Result<()> {
-    let valid_passwords = password_rules
+fn parse_input(input: &str) -> Result<Vec<PasswordRules>> {
+    input.lines().map(PasswordRules::try_from).collect()
+}
+
+fn part_1(password_rules: &[PasswordRules]) -> usize {
+    password_rules
         .iter()
         .filter(|v| v.is_password_valid_1())
-        .count();
-    writeln!(io::stdout(), "Part 1 : {}", valid_passwords)?;
-    Ok(())
+        .count()
 }
 
-fn part_2(password_rules: &[PasswordRules]) -> Result<()> {
-    let valid_passwords = password_rules
+fn part_2(password_rules: &[PasswordRules]) -> usize {
+    password_rules
         .iter()
         .filter(|v| v.is_password_valid_2())
-        .count();
-    writeln!(io::stdout(), "Part 2 : {}", valid_passwords)?;
-    Ok(())
+        .count()
+}
+
+#[cfg(all(feature = "unstable", test))]
+mod bench {
+    extern crate test;
+
+    use super::*;
+    use std::fs::File;
+    use test::Bencher;
+
+    fn read_input_file() -> Result<String> {
+        let mut input = String::new();
+        File::open("input/input.txt")?.read_to_string(&mut input)?;
+        Ok(input)
+    }
+
+    #[bench]
+    fn bench_parse_input(b: &mut Bencher) -> Result<()> {
+        let input = read_input_file()?;
+        b.iter(|| test::black_box(parse_input(&input)));
+        Ok(())
+    }
+
+    #[bench]
+    fn bench_part_1(b: &mut Bencher) -> Result<()> {
+        let password_rules = parse_input(&read_input_file()?)?;
+        b.iter(|| test::black_box(part_1(&password_rules)));
+        Ok(())
+    }
+
+    #[bench]
+    fn bench_part_2(b: &mut Bencher) -> Result<()> {
+        let password_rules = parse_input(&read_input_file()?)?;
+        b.iter(|| test::black_box(part_2(&password_rules)));
+        Ok(())
+    }
 }
