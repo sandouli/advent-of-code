@@ -59,7 +59,7 @@ impl TryFrom<&str> for PasswordRules {
                 )
             }
 
-            Ok(PasswordRules {
+            Ok(Self {
                 first_number,
                 second_number,
                 character: cap["character"].chars().next().unwrap(), // Safe unwrap ensured by the regex
