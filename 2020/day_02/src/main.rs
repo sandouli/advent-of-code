@@ -37,7 +37,11 @@ struct PasswordRules {
 
 impl PasswordRules {
     fn is_password_valid_1(&self) -> bool {
-        let occurrences = self.password.chars().filter(|&v| v == self.character).count();
+        let occurrences = self
+            .password
+            .chars()
+            .filter(|&v| v == self.character)
+            .count();
         self.first_number <= occurrences && occurrences <= self.second_number
     }
 
@@ -113,6 +117,32 @@ fn part_2(password_rules: &[PasswordRules]) -> usize {
         .iter()
         .filter(|v| v.is_password_valid_2())
         .count()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+
+    fn read_test_file() -> Result<String> {
+        let mut input = String::new();
+        File::open("input/test.txt")?.read_to_string(&mut input)?;
+        Ok(input)
+    }
+
+    #[test]
+    fn test_part_1() -> Result<()> {
+        let password_rules = parse_input(&read_test_file()?)?;
+        assert_eq!(part_1(&password_rules), 2);
+        Ok(())
+    }
+
+    #[test]
+    fn test_part_2() -> Result<()> {
+        let password_rules = parse_input(&read_test_file()?)?;
+        assert_eq!(part_2(&password_rules), 1);
+        Ok(())
+    }
 }
 
 #[cfg(all(feature = "unstable", test))]

@@ -75,6 +75,32 @@ fn part_2(expense_report: &[usize]) -> Result<usize> {
     err!("Part 2 : No combination found!")
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+
+    fn read_test_file() -> Result<String> {
+        let mut input = String::new();
+        File::open("input/test.txt")?.read_to_string(&mut input)?;
+        Ok(input)
+    }
+
+    #[test]
+    fn test_part_1() -> Result<()> {
+        let expense_report = parse_input(&read_test_file()?)?;
+        assert_eq!(part_1(&expense_report)?, 514579);
+        Ok(())
+    }
+
+    #[test]
+    fn test_part_2() -> Result<()> {
+        let expense_report = parse_input(&read_test_file()?)?;
+        assert_eq!(part_2(&expense_report)?, 241861950);
+        Ok(())
+    }
+}
+
 #[cfg(all(feature = "unstable", test))]
 mod bench {
     extern crate test;
