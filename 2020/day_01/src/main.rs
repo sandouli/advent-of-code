@@ -1,6 +1,25 @@
 #![cfg_attr(feature = "unstable", feature(test))]
-// Use this command to launch the program : cargo run --release < input/input.txt
-// Use this command to benchmark : cargo +nightly bench --features "unstable"
+
+// Lauch program : cargo run --release < input/input.txt
+// Launch benchmark : cargo +nightly bench --features "unstable"
+
+/*
+Benchmark results:
+
+* When not sorting expenses during parsing
+    running 3 tests
+    test bench::bench_parse_input ... bench:       8,950 ns/iter (+/- 727)
+    test bench::bench_part_1      ... bench:      12,541 ns/iter (+/- 1,166)
+    test bench::bench_part_2      ... bench:   1,598,317 ns/iter (+/- 93,409)
+
+* When sorting expenses during parsing
+    running 3 tests
+    test bench::bench_parse_input ... bench:      12,520 ns/iter (+/- 666)
+    test bench::bench_part_1      ... bench:         535 ns/iter (+/- 43)
+    test bench::bench_part_2      ... bench:      25,164 ns/iter (+/- 1,052)
+
+*/
+
 
 use std::error::Error;
 use std::io::{self, Read, Write};
@@ -27,6 +46,7 @@ fn parse_input(input: &str) -> Result<Vec<usize>> {
     for line in input.lines() {
         expense_report.push(line.parse::<usize>()?);
     }
+    expense_report.sort();
     Ok(expense_report)
 }
 
@@ -64,22 +84,29 @@ mod bench {
     use std::fs::File;
     use test::Bencher;
 
-    fn open_input_file() -> Result<Vec<usize>> {
+    fn read_input_file() -> Result<String> {
         let mut input = String::new();
         File::open("input/input.txt")?.read_to_string(&mut input)?;
-        parse_input(&input)
+        Ok(input)
+    }
+
+    #[bench]
+    fn bench_parse_input(b: &mut Bencher) -> Result<()> {
+        let input = read_input_file()?;
+        b.iter(|| test::black_box(parse_input(&input)));
+        Ok(())
     }
 
     #[bench]
     fn bench_part_1(b: &mut Bencher) -> Result<()> {
-        let expense_report = open_input_file()?;
+        let expense_report = parse_input(&read_input_file()?)?;
         b.iter(|| test::black_box(part_1(&expense_report)));
         Ok(())
     }
 
     #[bench]
     fn bench_part_2(b: &mut Bencher) -> Result<()> {
-        let expense_report = open_input_file()?;
+        let expense_report = parse_input(&read_input_file()?)?;
         b.iter(|| test::black_box(part_2(&expense_report)));
         Ok(())
     }
