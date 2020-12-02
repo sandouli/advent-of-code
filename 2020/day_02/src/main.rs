@@ -89,35 +89,18 @@ fn part_2(password_rules: &[PasswordRules]) -> Result<()> {
     let mut valid_passwords = 0;
 
     for password_rule in password_rules {
-        let first_char = if let Some(c) = password_rule
+        let first_char = password_rule
             .password
             .chars()
-            .nth(password_rule.first_number - 1)
-        {
-            c
-        } else {
-            err!(
-                "Password length is less than expected : {} should have at least {} chars",
-                password_rule.password,
-                password_rule.first_number
-            )
-        };
-        let second_char = if let Some(c) = password_rule
+            .nth(password_rule.first_number - 1);
+        let second_char = password_rule
             .password
             .chars()
-            .nth(password_rule.second_number - 1)
-        {
-            c
-        } else {
-            err!(
-                "Password length is less than expected : {} should have at least {} chars",
-                password_rule.password,
-                password_rule.second_number
-            )
-        };
+            .nth(password_rule.second_number - 1);
 
         if first_char != second_char
-            && (first_char == password_rule.character || second_char == password_rule.character)
+            && (first_char == Some(password_rule.character)
+                || second_char == Some(password_rule.character))
         {
             valid_passwords += 1;
         }
