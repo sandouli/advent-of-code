@@ -19,6 +19,31 @@ struct PasswordRules {
     password: String,
 }
 
+impl PasswordRules {
+    fn is_password_valid_1(&self) -> bool {
+        let occurrences = self
+            .password
+            .matches(self.character)
+            .count();
+        self.first_number <= occurrences && occurrences <= self.second_number
+    }
+
+    fn is_password_valid_2(&self) -> bool {
+        let first_char = self
+            .password
+            .chars()
+            .nth(self.first_number - 1);
+        let second_char = self
+            .password
+            .chars()
+            .nth(self.second_number - 1);
+
+        first_char != second_char
+            && (first_char == Some(self.character)
+                || second_char == Some(self.character))
+    }
+}
+
 fn main() -> Result<()> {
     let mut input = String::new();
     io::stdin().read_to_string(&mut input)?;
@@ -69,43 +94,13 @@ fn parse_input(input: &str) -> Result<Vec<PasswordRules>> {
 }
 
 fn part_1(password_rules: &[PasswordRules]) -> Result<()> {
-    let mut valid_passwords = 0;
-
-    for password_rule in password_rules {
-        let occurences = password_rule
-            .password
-            .matches(password_rule.character)
-            .count();
-        if password_rule.first_number <= occurences && occurences <= password_rule.second_number {
-            valid_passwords += 1;
-        }
-    }
-
+    let valid_passwords = password_rules.iter().filter(|v| v.is_password_valid_1()).count();
     writeln!(io::stdout(), "Part 1 : {}", valid_passwords)?;
     Ok(())
 }
 
 fn part_2(password_rules: &[PasswordRules]) -> Result<()> {
-    let mut valid_passwords = 0;
-
-    for password_rule in password_rules {
-        let first_char = password_rule
-            .password
-            .chars()
-            .nth(password_rule.first_number - 1);
-        let second_char = password_rule
-            .password
-            .chars()
-            .nth(password_rule.second_number - 1);
-
-        if first_char != second_char
-            && (first_char == Some(password_rule.character)
-                || second_char == Some(password_rule.character))
-        {
-            valid_passwords += 1;
-        }
-    }
-
+    let valid_passwords = password_rules.iter().filter(|v| v.is_password_valid_2()).count();
     writeln!(io::stdout(), "Part 2 : {}", valid_passwords)?;
     Ok(())
 }
