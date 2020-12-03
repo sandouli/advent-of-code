@@ -1,6 +1,6 @@
 #![cfg_attr(feature = "unstable", feature(test))]
 
-// Lauch program : cargo run --release < input/input.txt
+// Launch program : cargo run --release < input/input.txt
 // Launch benchmark : cargo +nightly bench --features "unstable"
 
 /*
