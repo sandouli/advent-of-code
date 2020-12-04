@@ -13,7 +13,6 @@ Benchmark results:
     test bench::bench_part_1      ... bench:     540,429 ns/iter (+/- 29,689)
     test bench::bench_part_2      ... bench:   3,979,029 ns/iter (+/- 1,322,497)
 
-
 */
 
 use std::error::Error;
@@ -99,10 +98,11 @@ fn traverse_trees_slope(
     let mut current_x: usize = 0;
     let mut current_y: usize = 0;
 
-    for _ in 0..(max_line - 1) {
-        current_x += slope.0;
+    while current_y < max_line - 1 {
+        current_x = (current_x + slope.0) % line_length;
+        // current_x %= line_length;
         current_y += slope.1;
-        if tree_positions.contains(&(current_x % line_length, current_y)) {
+        if tree_positions.contains(&(current_x, current_y)) {
             trees_crossed += 1;
         }
     }
