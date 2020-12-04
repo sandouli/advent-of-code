@@ -9,9 +9,9 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:   1,105,911 ns/iter (+/- 59,725)
-    test bench::bench_part_1      ... bench:       1,567 ns/iter (+/- 87)
-    test bench::bench_part_2      ... bench:     633,970 ns/iter (+/- 66,265)
+    test bench::bench_parse_input ... bench:   1,099,234 ns/iter (+/- 63,458)
+    test bench::bench_part_1      ... bench:       1,571 ns/iter (+/- 83)
+    test bench::bench_part_2      ... bench:     250,787 ns/iter (+/- 31,757)
 
 */
 
@@ -54,19 +54,14 @@ impl Passport {
 
     fn is_valid_2(&self) -> bool {
         lazy_static! {
-            static ref DAY_04_YEAR_REGEX: Regex =
-                Regex::new(r"^(?P<year>\d{4})$").expect("Invalid DAY_04_YEAR_REGEX!");
             static ref DAY_04_HEIGHT_REGEX: Regex =
                 Regex::new(r"^(?P<height>\d{2,3})(?P<measurement>(cm)|(in))$")
                     .expect("Invalid DAY_04_HEIGHT_REGEX!");
             static ref DAY_04_COLOR_REGEX: Regex =
                 Regex::new(r"^(?P<color>#[0-9a-f]{6})$").expect("Invalid DAY_04_COLOR_REGEX!");
-            static ref DAY_04_PID_REGEX: Regex =
-                Regex::new(r"^(?P<pid>\d{9})$").expect("Invalid DAY_04_PID_REGEX!");
         }
         if let Some(ref byr) = self.byr {
-            if let Some(cap) = DAY_04_YEAR_REGEX.captures(&byr) {
-                let year = cap["year"].parse::<usize>().unwrap(); // Safe unwrap ensured by the regex
+            if let Ok(year) = byr.parse::<usize>() {
                 if year < 1920 || year > 2002 {
                     return false;
                 }
@@ -77,8 +72,7 @@ impl Passport {
             return false;
         }
         if let Some(ref iyr) = self.iyr {
-            if let Some(cap) = DAY_04_YEAR_REGEX.captures(&iyr) {
-                let year = cap["year"].parse::<usize>().unwrap(); // Safe unwrap ensured by the regex
+            if let Ok(year) = iyr.parse::<usize>() {
                 if year < 2010 || year > 2020 {
                     return false;
                 }
@@ -89,8 +83,7 @@ impl Passport {
             return false;
         }
         if let Some(ref eyr) = self.eyr {
-            if let Some(cap) = DAY_04_YEAR_REGEX.captures(&eyr) {
-                let year = cap["year"].parse::<usize>().unwrap(); // Safe unwrap ensured by the regex
+            if let Ok(year) = eyr.parse::<usize>() {
                 if year < 2020 || year > 2030 {
                     return false;
                 }
@@ -138,7 +131,7 @@ impl Passport {
             return false;
         }
         if let Some(ref pid) = self.pid {
-            if DAY_04_PID_REGEX.captures(&pid).is_none() {
+            if pid.len() != 9 || pid.parse::<usize>().is_err() {
                 return false;
             }
         } else {
