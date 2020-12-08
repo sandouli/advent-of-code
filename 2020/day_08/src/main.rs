@@ -9,9 +9,9 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:     584,677 ns/iter (+/- 32,414)
-    test bench::bench_part_1      ... bench:      25,170 ns/iter (+/- 2,822)
-    test bench::bench_part_2      ... bench:   4,322,023 ns/iter (+/- 341,828)
+    test bench::bench_parse_input ... bench:     606,400 ns/iter (+/- 45,221)
+    test bench::bench_part_1      ... bench:      24,318 ns/iter (+/- 4,232)
+    test bench::bench_part_2      ... bench:   1,871,495 ns/iter (+/- 25,712)
 
 */
 
@@ -154,7 +154,7 @@ fn part_2(processor: Processor) -> Result<isize> {
         match processor.program[i] {
             (Command::Nop, number) => processor.program[i] = (Command::Jmp, number),
             (Command::Jmp, number) => processor.program[i] = (Command::Nop, number),
-            _ => {}
+            _ => continue,
         }
 
         let mut positions_executed: HashSet<isize> = HashSet::new();
