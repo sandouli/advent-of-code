@@ -9,9 +9,9 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:     101,493 ns/iter (+/- 15,975)
-    test bench::bench_part_1      ... bench:  79,907,602 ns/iter (+/- 3,840,854)
-    test bench::bench_part_2      ... bench: 134,061,672 ns/iter (+/- 4,306,232)
+    test bench::bench_parse_input ... bench:      94,294 ns/iter (+/- 7,283)
+    test bench::bench_part_1      ... bench:  70,056,476 ns/iter (+/- 4,620,083)
+    test bench::bench_part_2      ... bench: 112,152,263 ns/iter (+/- 3,398,333)
 
 */
 
@@ -45,6 +45,9 @@ impl Seats {
             let mut placement_has_changed = false;
             for (i, cell_line) in self.cells.iter().enumerate() {
                 for (j, cell) in cell_line.iter().enumerate() {
+                    if *cell == CellState::Floor {
+                        continue
+                    }
                     let occupied_seats = if only_see_adjacent_seats {
                         self.get_adjacent_occupied_seats(j, i)
                     } else {
@@ -70,14 +73,14 @@ impl Seats {
 
     fn get_adjacent_occupied_seats(&self, x: usize, y: usize) -> usize {
         let directions = vec![
-            (-1, -1),
-            (-1, 0),
-            (-1, 1),
-            (0, -1),
-            (0, 1),
-            (1, -1),
-            (1, 0),
-            (1, 1),
+            (-1, -1),   // North West
+            (-1, 0),    // West
+            (-1, 1),    // South West
+            (0, -1),    // South
+            (0, 1),     // North
+            (1, -1),    // North East
+            (1, 0),     // East
+            (1, 1),     // South East
         ];
         let mut adjacent_occupied_seats = 0;
 
@@ -100,14 +103,14 @@ impl Seats {
 
     fn get_visible_occupied_seats(&self, x: usize, y: usize) -> usize {
         let directions = vec![
-            (-1, -1),
-            (-1, 0),
-            (-1, 1),
-            (0, -1),
-            (0, 1),
-            (1, -1),
-            (1, 0),
-            (1, 1),
+            (-1, -1),   // North West
+            (-1, 0),    // West
+            (-1, 1),    // South West
+            (0, -1),    // South
+            (0, 1),     // North
+            (1, -1),    // North East
+            (1, 0),     // East
+            (1, 1),     // South East
         ];
         let mut visible_occupied_seats = 0;
         'outer: for direction in directions {
