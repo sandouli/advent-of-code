@@ -9,15 +9,11 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:     565,363 ns/iter (+/- 272,417)
-    test bench::bench_part_1      ... bench:      13,581 ns/iter (+/- 7,270)
-    test bench::bench_part_2      ... bench:      12,949 ns/iter (+/- 6,245)
+    test bench::bench_parse_input ... bench:      37,525 ns/iter (+/- 1,678)
+    test bench::bench_part_1      ... bench:      12,950 ns/iter (+/- 1,050)
+    test bench::bench_part_2      ... bench:      12,034 ns/iter (+/- 930)
 
 */
-
-#[macro_use]
-extern crate lazy_static;
-extern crate regex;
 
 use std::convert::TryFrom;
 use std::error::Error;
@@ -153,29 +149,19 @@ impl TryFrom<&str> for Ship {
     type Error = Box<dyn Error>;
 
     fn try_from(value: &str) -> Result<Self> {
-        use regex::Regex;
-        lazy_static! {
-            static ref DAY_12_INSTRUCTION_LINE_REGEX: Regex =
-                Regex::new(r"^(?P<instruction>[NSEWLRF])(?P<number>\d+)$")
-                    .expect("Invalid DAY_12_INSTRUCTION_LINE_REGEX!");
-        }
-
         let mut instructions: Vec<Instruction> = vec![];
 
         for line in value.lines() {
-            if let Some(cap) = DAY_12_INSTRUCTION_LINE_REGEX.captures(line) {
-                match &cap["instruction"] {
-                    "N" => instructions.push(Instruction::North(cap["number"].parse::<isize>()?)),
-                    "E" => instructions.push(Instruction::East(cap["number"].parse::<isize>()?)),
-                    "S" => instructions.push(Instruction::South(cap["number"].parse::<isize>()?)),
-                    "W" => instructions.push(Instruction::West(cap["number"].parse::<isize>()?)),
-                    "F" => instructions.push(Instruction::Forward(cap["number"].parse::<isize>()?)),
-                    "R" => instructions.push(Instruction::Right(cap["number"].parse::<isize>()?)),
-                    "L" => instructions.push(Instruction::Left(cap["number"].parse::<isize>()?)),
-                    other_char => err!("Invalid instruction char : {}", other_char),
-                }
-            } else {
-                err!("Couldn't parse input : {}", line)
+            let number = line[1..].parse::<isize>()?;
+            match &line[..1] {
+                "N" => instructions.push(Instruction::North(number)),
+                "E" => instructions.push(Instruction::East(number)),
+                "S" => instructions.push(Instruction::South(number)),
+                "W" => instructions.push(Instruction::West(number)),
+                "F" => instructions.push(Instruction::Forward(number)),
+                "R" => instructions.push(Instruction::Right(number)),
+                "L" => instructions.push(Instruction::Left(number)),
+                other_char => err!("Invalid instruction char : {}", other_char),
             }
         }
 
