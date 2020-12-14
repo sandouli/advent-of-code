@@ -9,9 +9,9 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:       2,602 ns/iter (+/- 336)
-    test bench::bench_part_1      ... bench:     156,080 ns/iter (+/- 12,064)
-    test bench::bench_part_2      ... bench:      14,432 ns/iter (+/- 2,064)
+    test bench::bench_parse_input ... bench:       2,488 ns/iter (+/- 338)
+    test bench::bench_part_1      ... bench:         141 ns/iter (+/- 7)
+    test bench::bench_part_2      ... bench:      14,131 ns/iter (+/- 1,273)
 
 */
 
@@ -33,7 +33,7 @@ fn main() -> Result<()> {
     writeln!(
         io::stdout(),
         "Part 1 : {}",
-        part_1(earliest_depart_time, &buses)
+        part_1(earliest_depart_time, &buses)?
     )?;
     writeln!(io::stdout(), "Part 2 : {}", part_2(&buses))?;
     Ok(())
@@ -60,24 +60,17 @@ fn parse_input(input: &str) -> Result<(usize, Vec<usize>)> {
     Ok((earliest_depart_time, buses))
 }
 
-fn part_1(earliest_depart_time: usize, buses: &[usize]) -> usize {
-    let mut current_earliest_bus = buses[0];
-    let mut current_earliest_bus_time = std::usize::MAX;
-    for bus in buses {
-        if *bus == 1 {
-            continue;
-        }
-        let mut current_time = 0;
-        while current_time < earliest_depart_time {
-            current_time += bus
-        }
-        if current_time < current_earliest_bus_time {
-            current_earliest_bus = *bus;
-            current_earliest_bus_time = current_time;
-        }
+fn part_1(earliest_depart_time: usize, buses: &[usize]) -> Result<usize> {
+    if let Some((bus, waiting)) = buses
+        .iter()
+        .filter(|&v| *v != 1)
+        .map(|bus_id| (bus_id, bus_id - (earliest_depart_time % bus_id)))
+        .min_by(|a, b| a.1.cmp(&b.1))
+    {
+        Ok(bus * waiting)
+    } else {
+        err!("Could not find a minimum, is the input empty?")
     }
-
-    (current_earliest_bus_time - earliest_depart_time) * current_earliest_bus
 }
 
 fn part_2(buses: &[usize]) -> usize {
@@ -114,7 +107,7 @@ mod tests {
     #[test]
     fn test_part_1() -> Result<()> {
         let (earliest_depart_time, buses) = parse_input(&read_test_file()?)?;
-        assert_eq!(part_1(earliest_depart_time, &buses), 295);
+        assert_eq!(part_1(earliest_depart_time, &buses)?, 295);
         Ok(())
     }
 
