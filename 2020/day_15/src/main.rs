@@ -9,9 +9,9 @@ Benchmark results:
     running 5 tests
     test tests::test_part_1 ... ignored
     test tests::test_part_2 ... ignored
-    test bench::bench_parse_input ... bench:            340 ns/iter (+/- 26)
-    test bench::bench_part_1      ... bench:        186,300 ns/iter (+/- 14,280)
-    test bench::bench_part_2      ... bench:  4,953,009,097 ns/iter (Estimated on one iteration)
+    test bench::bench_parse_input ... bench:         347 ns/iter (+/- 38)
+    test bench::bench_part_1      ... bench:     121,703 ns/iter (+/- 6,267)
+    test bench::bench_part_2      ... bench: 3,809,101,967 ns/iter (+/- 314,283,380)
 
 */
 
@@ -64,17 +64,10 @@ fn execute_turns(numbers: &[usize], final_turn: usize) -> usize {
     }
 
     for i in numbers.len()..final_turn {
-        match spoken_numbers.get(&last_number_spoken) {
-            Some(age) => {
-                let age = *age;
-                spoken_numbers.insert(last_number_spoken, i);
-                last_number_spoken = i - age;
-            }
-            None => {
-                spoken_numbers.insert(last_number_spoken, i);
-                last_number_spoken = 0;
-            }
-        }
+        last_number_spoken = match spoken_numbers.insert(last_number_spoken, i) {
+            Some(age) => i - age,
+            None => 0,
+        };
     }
 
     last_number_spoken
